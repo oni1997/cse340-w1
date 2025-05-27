@@ -33,4 +33,34 @@ Util.getNav = async function () {
  **************************************** */
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
 
-module.exports = Util
+function buildVehicleDetail(vehicle) {
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
+
+  const mileageFormatter = new Intl.NumberFormat('en-US');
+
+  const html = `
+    <div class="vehicle-detail">
+      <div class="vehicle-image">
+        <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}">
+      </div>
+      <div class="vehicle-info">
+        <h2>${vehicle.inv_make} ${vehicle.inv_model}</h2>
+        <p class="price">Price: ${formatter.format(vehicle.inv_price)}</p>
+        <p>Year: ${vehicle.inv_year}</p>
+        <p>Mileage: ${mileageFormatter.format(vehicle.inv_miles)} miles</p>
+        <p>Color: ${vehicle.inv_color}</p>
+        <p class="description">${vehicle.inv_description}</p>
+      </div>
+    </div>
+  `
+  return html
+}
+
+module.exports = {
+  getNav: Util.getNav,
+  handleErrors: Util.handleErrors,
+  buildVehicleDetail
+}
