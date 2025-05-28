@@ -1,3 +1,5 @@
+const fs = require('fs')
+const path = require('path')
 require('dotenv').config()
 const { Pool } = require("pg")
 
@@ -5,10 +7,10 @@ const { Pool } = require("pg")
  * Connection Pool
  * SSL Object needed for local testing of app
  * But will cause problems in production environment
- * If - else will make determination which to use
- * *************** */
+ * If app is in production, let use the default SSL
+ *************** */
 let pool
-if (process.env.NODE_ENV == "development") {
+if (process.env.NODE_ENV === "development") {
   pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
@@ -27,10 +29,21 @@ if (process.env.NODE_ENV == "development") {
         throw error
       }
     },
+    async rebuildDatabase() {
+      try {
+        const sqlPath = path.join(__dirname, 'database_rebuild.sql')
+        const sql = fs.readFileSync(sqlPath, 'utf8')
+        await pool.query(sql)
+        console.log("Database rebuild script executed successfully.")
+      } catch (err) {
+        console.error("Error running database rebuild script:", err)
+      }
+    }
   }
 } else {
   pool = new Pool({
-    connectionString: process.env.DATABASE_URL+"?ssl=true",
+    connectionString: process.env.DATABASE_URL,
   })
-  module.exports = pool
 }
+
+module.exports = pool

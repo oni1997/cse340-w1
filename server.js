@@ -10,11 +10,35 @@ app.set('view engine', 'ejs');
 const utilities = require("./utilities/")
 const baseController = require("./controllers/baseController");
 const errorRoute = require("./routes/errorRoute")
-const inventoryRoute = require("./routes/inventoryRoute")
+const db = require("./database")
+
+// Run the rebuild script at startup (development only)
+if (process.env.NODE_ENV === "development" && db.rebuildDatabase) {
+  db.rebuildDatabase()
+}
 
 // Index route
 app.get("/", utilities.handleErrors(baseController.buildHome));
-app.use("/inv", inventoryRoute)
+// Inventory routes
+app.use("/inv", require("./routes/inventoryRoute"))
+
+app.get("/test-db", async (req, res) => {
+  try {
+    const pool = require("./database")
+    const result = await pool.query("SELECT NOW()")
+    res.send({
+      status: "Database connection successful",
+      timestamp: result.rows[0].now,
+      message: "If you see this, your database connection is working properly."
+    })
+  } catch (error) {
+    res.status(500).send({
+      status: "Database connection failed",
+      error: error.message
+    })
+  }
+})
+
 app.use("/", errorRoute)
 
 /* ***********************
@@ -22,19 +46,24 @@ app.use("/", errorRoute)
  * Place after all other middleware
  *************************/
 app.use(async (err, req, res, next) => {
-  let nav = await utilities.getNav()
+  const nav = await utilities.getNav()
+  
   console.error(`Error at: "${req.originalUrl}": ${err.message}`)
-  if(err.status == 404){ 
-    message = 'Oh no! The page you were looking for was not found.'
+  console.error(err.stack) // Add stack trace for better debugging
+  
+  if(err.status == 404) { 
+    res.status(404).render("errors/404", {
+      title: '404 - Page Not Found',
+      message: err.message,
+      nav
+    })
   } else {
-    message = 'Oh no! There was a crash. Maybe try a different route?'
+    res.status(500).render("errors/500", {
+      title: '500 - Server Error',
+      message: err.message,
+      nav
+    })
   }
-  res.status(err.status || 500)
-  res.render("errors/error", {
-    title: err.status || 'Server Error',
-    message,
-    nav
-  })
 })
 
 app.listen(port, () => {
