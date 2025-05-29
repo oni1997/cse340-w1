@@ -51,7 +51,7 @@ invCont.buildVehicleDetail = async function (req, res, next) {
     
     if (!vehicleData || vehicleData.length === 0) {
       const nav = await utilities.getNav()
-      return res.render("./inventory/detail", {
+      return res.status(404).render("./inventory/detail", {
         title: "Vehicle Not Found",
         nav,
         vehicleDetail: '<p class="notice">Sorry, the requested vehicle was not found.</p>'
@@ -70,12 +70,7 @@ invCont.buildVehicleDetail = async function (req, res, next) {
     })
   } catch (error) {
     console.error("getVehicleById error:", error)
-    const nav = await utilities.getNav()
-    res.render("./inventory/detail", {
-      title: "Vehicle Detail",
-      nav,
-      vehicleDetail: '<p class="notice">Sorry, there was an error loading the vehicle.</p>'
-    })
+    next(error)
   }
 }
 

@@ -1,9 +1,16 @@
 <%- include('../partials/head') %>
-<%- include('../partials/navigation') %>
-<%- include('../partials/header') %>
-
-<h1><%= title %></h1>
-
-<%- vehicleDetail %>
-
-<%- include('../partials/footer') %>
+<body>
+  <div class="wrapper">
+    <%- include('../partials/header') %>
+    <%- include('../partials/navigation') %>
+    
+    <main>
+      <h1><%= title %></h1>
+      
+      <%- vehicleDetail %>
+    </main>
+    
+    <%- include('../partials/footer') %>
+  </div>
+</body>
+</html>

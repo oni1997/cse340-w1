@@ -46,10 +46,15 @@ app.use("/", errorRoute)
  * Place after all other middleware
  *************************/
 app.use(async (err, req, res, next) => {
-  const nav = await utilities.getNav()
+  let nav
+  try {
+    nav = await utilities.getNav()
+  } catch (error) {
+    console.error("Error getting navigation:", error)
+    nav = "<ul><li><a href='/'>Home</a></li></ul>"
+  }
   
   console.error(`Error at: "${req.originalUrl}": ${err.message}`)
-  console.error(err.stack) // Add stack trace for better debugging
   
   if(err.status == 404) { 
     res.status(404).render("errors/404", {

@@ -1,7 +1,16 @@
-<%- include('../partials/header') %>
-
-<h1><%= title %></h1>
-
-<%- grid %>
-
-<%- include('../partials/footer') %>
+<%- include('../partials/head') %>
+<body>
+  <div class="wrapper">
+    <%- include('../partials/header') %>
+    <%- include('../partials/navigation') %>
+    
+    <main>
+      <h1><%= title %></h1>
+      
+      <%- grid %>
+    </main>
+    
+    <%- include('../partials/footer') %>
+  </div>
+</body>
+</html>
