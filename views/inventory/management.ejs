@@ -1,0 +1,26 @@
+<%- include('../partials/head') %>
+<body>
+  <div class="wrapper">
+    <%- include('../partials/header') %>
+    <%- include('../partials/navigation') %>
+    
+    <main>
+      <h1>Inventory Management</h1>
+      
+      <% if (messages) { %>
+        <p class="notice"><%= messages %></p>
+      <% } %>
+      
+      <div class="management-links">
+        <h2>Inventory Management Tools</h2>
+        <ul>
+          <li><a href="/inv/add-classification">Add New Classification</a></li>
+          <li><a href="/inv/add-inventory">Add New Vehicle</a></li>
+        </ul>
+      </div>
+    </main>
+    
+    <%- include('../partials/footer') %>
+  </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<%- include('../partials/head') %>
+<body>
+  <div class="wrapper">
+    <%- include('../partials/header') %>
+    <%- include('../partials/navigation') %>
+    
+    <main>
+      <h1>Add New Classification</h1>
+      
+      <% if (messages) { %>
+        <p class="notice"><%= messages %></p>
+      <% } %>
+      
+      <% if (errors) { %>
+        <ul class="notice">
+          <% errors.forEach(error => { %>
+            <li><%= error.msg %></li>
+          <% }) %>
+        </ul>
+      <% } %>
+      
+      <div class="form-container">
+        <p>Note: Classification name cannot contain spaces or special characters.</p>
+        <form action="/inv/add-classification" method="post">
+          <label for="classification_name">Classification Name:</label>
+          <input type="text" id="classification_name" name="classification_name" required pattern="^[a-zA-Z0-9]+$" title="Classification name can only contain alphanumeric characters, no spaces or special characters">
+          <button type="submit">Add Classification</button>
+        </form>
+      </div>
+    </main>
+    
+    <%- include('../partials/footer') %>
+  </div>
+</body>
+</html>
