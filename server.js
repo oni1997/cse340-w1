@@ -2,6 +2,17 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
+const session = require('express-session');
+const flash = require('connect-flash');
+
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } 
+}));
+
+app.use(flash());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -12,13 +23,17 @@ const baseController = require("./controllers/baseController");
 const errorRoute = require("./routes/errorRoute")
 const db = require("./database")
 
+// Add these lines before your routes
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Run the rebuild script at startup (development only)
 if (process.env.NODE_ENV === "development" && db.rebuildDatabase) {
   db.rebuildDatabase()
 }
 
 // Index route
-app.get("/", utilities.handleErrors(baseController.buildHome));
+app.get("/", utilities.handleErrors(require("./controllers/homeController").getHomePage));
 // Inventory routes
 app.use("/inv", require("./routes/inventoryRoute"))
 
@@ -46,6 +61,12 @@ app.use("/", errorRoute)
  * Place after all other middleware
  *************************/
 app.use(async (err, req, res, next) => {
+  // Check if it's an image 404 error
+  if(err.status == 404 && req.path.match(/\.(png|jpg|jpeg|gif)$/i)) {
+    // Redirect to the fallback SVG
+    return res.redirect('/images/svg/No_image_available.svg');
+  }
+  
   let nav
   try {
     nav = await utilities.getNav()

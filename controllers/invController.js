@@ -80,7 +80,8 @@ invCont.buildVehicleDetail = async function (req, res, next) {
 invCont.buildManagementView = async function (req, res, next) {
   try {
     const nav = await utilities.getNav()
-    const messages = req.flash("notice")
+    // Check if flash is available before using it
+    const messages = req.flash ? req.flash("notice") : null
     
     res.render("./inventory/management", {
       title: "Inventory Management",
@@ -120,8 +121,10 @@ invCont.buildAddClassification = async function (req, res, next) {
 invCont.addClassification = async function (req, res, next) {
   try {
     const { classification_name } = req.body
+    // console.log("Adding classification:", classification_name)
     
     const result = await invModel.addClassification(classification_name)
+    // console.log("Add classification result:", result)
     
     if (result) {
       req.flash("notice", `Classification '${classification_name}' added successfully.`)

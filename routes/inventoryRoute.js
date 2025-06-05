@@ -24,6 +24,11 @@ router.get("/add-inventory", utilities.handleErrors(invController.buildAddInvent
 // Process add classification
 router.post(
   "/add-classification",
+  (req, res, next) => {
+    // console.log("Raw request body:", req.body);
+    // console.log("Classification name from form:", req.body.classification_name);
+    next();
+  },
   // Validation rules
   [
     body("classification_name")
@@ -44,6 +49,7 @@ router.post(
   async (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
+      // console.log("Validation errors:", errors.array());
       const nav = await utilities.getNav()
       res.render("./inventory/add-classification", {
         title: "Add New Classification",

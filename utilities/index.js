@@ -31,13 +31,22 @@ Util.getNav = async function () {
  **************************************** */
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
 
+/* Helper function to check if image exists or use fallback */
+Util.getImagePath = function(imagePath) {
+  // If path is empty or undefined, use fallback
+  if (!imagePath) {
+    return '/images/svg/No_image_available.svg';
+  }
+  return imagePath;
+}
+
 /* ****************************************
  *  Build the vehicle detail view HTML
  * *************************************** */
 Util.buildVehicleDetail = function(vehicle){
   let detail = '<div class="vehicle-detail">'
   detail += '<div class="vehicle-image">'
-  detail += `<img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">`
+  detail += `<img src="${Util.getImagePath(vehicle.inv_image)}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">`
   detail += '</div>'
   detail += '<div class="vehicle-info">'
   detail += `<h2>${vehicle.inv_make} ${vehicle.inv_model} (${vehicle.inv_year})</h2>`
@@ -61,7 +70,7 @@ Util.buildClassificationGrid = async function(data){
       grid += '<li style="width: 300px; padding: 1.25rem; background-color: #f8f9fa; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.15); transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; height: 100%;">'
       grid +=  '<a href="/inv/detail/' + vehicle.inv_id 
       + '" title="View ' + vehicle.inv_make + ' ' + vehicle.inv_model 
-      + ' details"><img src="' + vehicle.inv_thumbnail 
+      + ' details"><img src="' + Util.getImagePath(vehicle.inv_thumbnail) 
       + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model 
       + ' on CSE Motors" style="width: 100%; height: auto; border-radius: 6px; margin-bottom: 1rem; object-fit: cover; aspect-ratio: 16/9;"></a>'
       grid += '<div class="namePrice" style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%;">'

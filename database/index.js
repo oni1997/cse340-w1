@@ -22,10 +22,8 @@ if (process.env.NODE_ENV === "development") {
     async query(text, params) {
       try {
         const res = await pool.query(text, params)
-        console.log("executed query", { text })
         return res
       } catch (error) {
-        console.error("error in query", { text })
         throw error
       }
     },
@@ -34,7 +32,7 @@ if (process.env.NODE_ENV === "development") {
         const sqlPath = path.join(__dirname, 'database_rebuild.sql')
         const sql = fs.readFileSync(sqlPath, 'utf8')
         await pool.query(sql)
-        console.log("Database rebuild script executed successfully.")
+        // console.log("Database rebuild script executed successfully.")
       } catch (err) {
         console.error("Error running database rebuild script:", err)
       }
