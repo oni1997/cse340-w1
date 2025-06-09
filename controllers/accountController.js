@@ -240,9 +240,19 @@ async function updatePassword(req, res) {
 *  Process logout (Task 6)
 * *************************************** */
 async function accountLogout(req, res) {
-  res.clearCookie("jwt")
-  req.flash("notice", "You have been logged out.")
-  res.redirect("/")
+  // Clear the JWT cookie
+  if(process.env.NODE_ENV === 'development') {
+    res.clearCookie("jwt")
+  } else {
+    res.clearCookie("jwt", { secure: true })
+  }
+
+  // Clear any session data
+  res.locals.accountData = null
+  res.locals.loggedin = 0
+
+  // Redirect to home page
+  return res.redirect("/")
 }
 
 module.exports = {
