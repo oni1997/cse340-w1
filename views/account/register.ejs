@@ -1,0 +1,59 @@
+<%- include('../partials/head') %>
+<body>
+  <div class="wrapper">
+    <%- include('../partials/header') %>
+    <%- include('../partials/navigation') %>
+    
+    <main>
+      <div class="account-form-container">
+        <h1><%= title %></h1>
+
+        <% if (typeof messages !== 'undefined' && messages && messages.length > 0) { %>
+          <div class="notice"><%= messages %></div>
+        <% } %>
+
+        <% if (typeof errors !== 'undefined' && errors && Array.isArray(errors) && errors.length > 0) { %>
+          <ul class="notice">
+            <% errors.forEach(function(error) { %>
+              <li><%= error.msg %></li>
+            <% }) %>
+          </ul>
+        <% } %>
+
+        <form action="/account/register" method="post">
+          <fieldset>
+            <legend>Create Your Account</legend>
+
+            <label for="account_firstname">First Name:</label>
+            <input type="text" id="account_firstname" name="account_firstname"
+                   value="<%= locals.account_firstname ? account_firstname : '' %>" required>
+
+            <label for="account_lastname">Last Name:</label>
+            <input type="text" id="account_lastname" name="account_lastname"
+                   value="<%= locals.account_lastname ? account_lastname : '' %>" required>
+
+            <label for="account_email">Email:</label>
+            <input type="email" id="account_email" name="account_email"
+                   value="<%= locals.account_email ? account_email : '' %>" required>
+
+            <label for="account_password">Password:</label>
+            <input type="password" id="account_password" name="account_password"
+                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
+                   title="Password must be at least 12 characters and contain at least 1 capital letter, 1 number and 1 special character"
+                   required>
+            <div class="password-requirements">Password must be at least 12 characters and contain at least 1 capital letter, 1 number and 1 special character</div>
+
+            <input type="submit" value="Register">
+          </fieldset>
+        </form>
+
+        <div class="account-links">
+          <p>Already have an account? <a href="/account/login">Sign in</a></p>
+        </div>
+      </div>
+    </main>
+    
+    <%- include('../partials/footer') %>
+  </div>
+</body>
+</html>

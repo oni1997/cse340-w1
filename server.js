@@ -4,6 +4,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 const session = require('express-session');
 const flash = require('connect-flash');
+const cookieParser = require("cookie-parser");
+require("dotenv").config();
 
 app.use(session({
   secret: 'secret',
@@ -14,6 +16,8 @@ app.use(session({
 
 app.use(flash());
 
+app.use(cookieParser());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('view engine', 'ejs');
@@ -22,6 +26,8 @@ const utilities = require("./utilities/")
 const baseController = require("./controllers/baseController");
 const errorRoute = require("./routes/errorRoute")
 const db = require("./database")
+
+app.use(utilities.checkJWTToken);
 
 // Add these lines before your routes
 app.use(express.json());
@@ -36,6 +42,8 @@ if (process.env.NODE_ENV === "development" && db.rebuildDatabase) {
 app.get("/", utilities.handleErrors(require("./controllers/homeController").getHomePage));
 // Inventory routes
 app.use("/inv", require("./routes/inventoryRoute"))
+// Account routes
+app.use("/account", require("./routes/accountRoute"))
 
 app.get("/test-db", async (req, res) => {
   try {

@@ -1,0 +1,47 @@
+<%- include('../partials/head') %>
+<body>
+  <div class="wrapper">
+    <%- include('../partials/header') %>
+    <%- include('../partials/navigation') %>
+    
+    <main>
+      <div class="account-form-container">
+        <h1><%= title %></h1>
+
+        <% if (typeof messages !== 'undefined' && messages && messages.length > 0) { %>
+          <div class="notice"><%= messages %></div>
+        <% } %>
+
+        <% if (typeof errors !== 'undefined' && errors && Array.isArray(errors) && errors.length > 0) { %>
+          <ul class="notice">
+            <% errors.forEach(function(error) { %>
+              <li><%= error.msg %></li>
+            <% }) %>
+          </ul>
+        <% } %>
+
+        <form action="/account/login" method="post">
+          <fieldset>
+            <legend>Login to Your Account</legend>
+
+            <label for="account_email">Email:</label>
+            <input type="email" id="account_email" name="account_email"
+                   value="<%= locals.account_email ? account_email : '' %>" required>
+
+            <label for="account_password">Password:</label>
+            <input type="password" id="account_password" name="account_password" required>
+
+            <input type="submit" value="Login">
+          </fieldset>
+        </form>
+
+        <div class="account-links">
+          <p>Don't have an account? <a href="/account/register">Sign up</a></p>
+        </div>
+      </div>
+    </main>
+    
+    <%- include('../partials/footer') %>
+  </div>
+</body>
+</html>

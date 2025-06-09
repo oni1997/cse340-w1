@@ -1,0 +1,48 @@
+<%- include('../partials/head') %>
+<body>
+  <div class="wrapper">
+    <%- include('../partials/header') %>
+    <%- include('../partials/navigation') %>
+    
+    <main>
+      <div class="account-form-container">
+        <% if (typeof messages !== 'undefined' && messages && messages.length > 0) { %>
+          <div class="notice"><%= messages %></div>
+        <% } %>
+
+        <% if (typeof errors !== 'undefined' && errors && Array.isArray(errors) && errors.length > 0) { %>
+          <ul class="notice">
+            <% errors.forEach(function(error) { %>
+              <li><%= error.msg %></li>
+            <% }) %>
+          </ul>
+        <% } %>
+
+        <!-- Task 3: Account type-based greeting and content -->
+         <h1>Account Management</h1>
+        <% if (locals.accountData) { %>
+          <h2>Welcome <%= accountData.account_firstname %></h2>
+
+          <!-- Update account information link for all clients -->
+          <div class="account-links">
+            <p><a href="/account/update/<%= accountData.account_id %>">Update Account Information</a></p>
+          </div>
+
+          <!-- Task 3: Show inventory management for Employee and Admin only -->
+          <% if (accountData.account_type === 'Employee' || accountData.account_type === 'Admin') { %>
+            <h3>Inventory Management</h3>
+            <div class="account-links">
+              <p><a href="/inv/">Manage Inventory</a></p>
+            </div>
+          <% } %>
+        <% } else { %>
+          <h1>Account Management</h1>
+          <p>Please log in to access your account.</p>
+        <% } %>
+      </div>
+    </main>
+    
+    <%- include('../partials/footer') %>
+  </div>
+</body>
+</html>

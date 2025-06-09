@@ -12,18 +12,20 @@ router.get("/type/:classificationId", utilities.handleErrors(invController.build
 // Route to get vehicle detail view
 router.get("/detail/:invId", utilities.handleErrors(invController.buildVehicleDetail))
 
-// Route to inventory management view
-router.get("/", utilities.handleErrors(invController.buildManagementView))
+// Route to inventory management view (Task 2: Add authorization)
+router.get("/", utilities.checkJWTToken, utilities.checkAccountType, utilities.handleErrors(invController.buildManagementView))
 
-// Route to add classification view
-router.get("/add-classification", utilities.handleErrors(invController.buildAddClassification))
+// Route to add classification view (Task 2: Add authorization)
+router.get("/add-classification", utilities.checkJWTToken, utilities.checkAccountType, utilities.handleErrors(invController.buildAddClassification))
 
-// Route to add inventory view
-router.get("/add-inventory", utilities.handleErrors(invController.buildAddInventory))
+// Route to add inventory view (Task 2: Add authorization)
+router.get("/add-inventory", utilities.checkJWTToken, utilities.checkAccountType, utilities.handleErrors(invController.buildAddInventory))
 
-// Process add classification
+// Process add classification (Task 2: Add authorization)
 router.post(
   "/add-classification",
+  utilities.checkJWTToken,
+  utilities.checkAccountType,
   (req, res, next) => {
     // console.log("Raw request body:", req.body);
     // console.log("Classification name from form:", req.body.classification_name);
@@ -67,6 +69,8 @@ router.post(
 // Process add inventory
 router.post(
   "/add-inventory",
+  utilities.checkJWTToken,
+  utilities.checkAccountType,
   // Validation rules
   [
     body("classification_id")

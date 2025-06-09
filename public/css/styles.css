@@ -242,3 +242,250 @@
   transform: translateY(-3px);
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
+
+/* Header layout styles */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.site-identity h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.8rem;
+}
+
+.account-link {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.account-link a {
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.account-link a[href*="/account/"]:not([href*="logout"]) {
+  background-color: #3498db;
+  color: white;
+}
+
+.account-link a[href*="logout"] {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.account-link a[href*="login"] {
+  background-color: #2c3e50;
+  color: white;
+}
+
+.account-link a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+/* Responsive header */
+@media screen and (max-width: 768px) {
+  header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .account-link {
+    justify-content: center;
+  }
+}
+
+/* Account Forms Styling */
+.account-form-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  border: 1px solid #e1e8ed;
+}
+
+.account-form-container h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+/* Notice/Error Messages */
+.notice {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #f5c6cb;
+  margin-bottom: 1.5rem;
+  list-style: none;
+}
+
+.notice li {
+  margin: 0.5rem 0;
+}
+
+.notice:empty {
+  display: none;
+}
+
+/* Success Messages */
+.success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #c3e6cb;
+  margin-bottom: 1.5rem;
+}
+
+/* Form Styling */
+form fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+form legend {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  width: 100%;
+}
+
+form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #34495e;
+  font-size: 0.95rem;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e1e8ed;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="password"]:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+form input[type="submit"] {
+  width: 100%;
+  padding: 0.875rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+form input[type="submit"]:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+form input[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* Password Requirements */
+.password-requirements {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border-left: 3px solid #3498db;
+}
+
+/* Account Links */
+.account-links {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e1e8ed;
+}
+
+.account-links a {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.account-links a:hover {
+  color: #2980b9;
+  text-decoration: underline;
+}
+
+/* Responsive design for account forms */
+@media screen and (max-width: 768px) {
+  .account-form-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .account-form-container h1 {
+    font-size: 1.5rem;
+  }
+
+  form legend {
+    font-size: 1.1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .account-form-container {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+
+  .account-form-container h1 {
+    font-size: 1.3rem;
+  }
+
+  form input[type="text"],
+  form input[type="email"],
+  form input[type="password"],
+  form input[type="submit"] {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
