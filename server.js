@@ -62,6 +62,60 @@ app.get("/test-db", async (req, res) => {
   }
 })
 
+// Route to check and update account types (for production setup)
+app.get("/admin/accounts", async (req, res) => {
+  try {
+    const pool = require("./database")
+    const result = await pool.query("SELECT account_id, account_firstname, account_lastname, account_email, account_type FROM account ORDER BY account_id")
+    res.send({
+      status: "Account data retrieved",
+      accounts: result.rows,
+      message: "Current accounts in database"
+    })
+  } catch (error) {
+    res.status(500).send({
+      status: "Failed to retrieve accounts",
+      error: error.message
+    })
+  }
+})
+
+// Route to update account type (for production setup)
+app.post("/admin/update-account-type", async (req, res) => {
+  try {
+    const { account_email, new_type } = req.body
+    if (!account_email || !new_type) {
+      return res.status(400).send({
+        status: "Missing parameters",
+        message: "Please provide account_email and new_type"
+      })
+    }
+
+    const pool = require("./database")
+    const result = await pool.query(
+      "UPDATE account SET account_type = $1 WHERE account_email = $2 RETURNING account_id, account_firstname, account_lastname, account_email, account_type",
+      [new_type, account_email]
+    )
+
+    if (result.rows.length > 0) {
+      res.send({
+        status: "Account type updated successfully",
+        updated_account: result.rows[0]
+      })
+    } else {
+      res.status(404).send({
+        status: "Account not found",
+        message: "No account found with that email address"
+      })
+    }
+  } catch (error) {
+    res.status(500).send({
+      status: "Failed to update account type",
+      error: error.message
+    })
+  }
+})
+
 app.use("/", errorRoute)
 
 /* ***********************
