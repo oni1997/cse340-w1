@@ -3,14 +3,238 @@
   <div class="wrapper">
     <%- include('../partials/header') %>
     <%- include('../partials/navigation') %>
-    
+
     <main>
       <h1><%= title %></h1>
-      
+
       <%- vehicleDetail %>
+
+      <!-- Reviews Section -->
+      <section class="reviews-section">
+        <div class="reviews-header">
+          <h2>Customer Reviews</h2>
+          <% if (averageRating && reviewCount > 0) { %>
+            <div class="rating-summary">
+              <div class="average-rating">
+                <% for(let i = 1; i <= 5; i++) { %>
+                  <span class="star <%= i <= Math.round(averageRating) ? 'filled' : '' %>">⭐</span>
+                <% } %>
+                <span class="rating-text"><%= parseFloat(averageRating).toFixed(1) %>/5 (<%= reviewCount %> review<%= reviewCount !== 1 ? 's' : '' %>)</span>
+              </div>
+            </div>
+          <% } else { %>
+            <p class="no-rating">No reviews yet</p>
+          <% } %>
+        </div>
+
+        <!-- Review Actions -->
+        <% if (locals.loggedin) { %>
+          <div class="review-actions">
+            <% if (canReview) { %>
+              <a href="/reviews/add/<%= vehicle.inv_id %>" class="btn-review">Write a Review</a>
+            <% } else if (hasExistingReview) { %>
+              <p class="review-notice">You have already reviewed this vehicle. <a href="/reviews/">Manage your reviews</a></p>
+            <% } %>
+          </div>
+        <% } else { %>
+          <div class="review-actions">
+            <p class="login-prompt"><a href="/account/login">Login</a> to write a review</p>
+          </div>
+        <% } %>
+
+        <!-- Reviews List -->
+        <div class="reviews-list">
+          <% if (reviews && reviews.length > 0) { %>
+            <% reviews.forEach(review => { %>
+              <div class="review-item">
+                <div class="review-header">
+                  <div class="reviewer-info">
+                    <strong><%= review.account_firstname %> <%= review.account_lastname.charAt(0) %>.</strong>
+                    <div class="review-rating">
+                      <% for(let i = 1; i <= 5; i++) { %>
+                        <span class="star <%= i <= review.review_rating ? 'filled' : '' %>">⭐</span>
+                      <% } %>
+                    </div>
+                  </div>
+                  <div class="review-date">
+                    <%= new Date(review.review_date).toLocaleDateString() %>
+                  </div>
+                </div>
+                <div class="review-content">
+                  <h4><%= review.review_title %></h4>
+                  <p><%= review.review_text %></p>
+                </div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <div class="no-reviews">
+              <p>No reviews yet. Be the first to review this vehicle!</p>
+            </div>
+          <% } %>
+        </div>
+      </section>
     </main>
-    
+
     <%- include('../partials/footer') %>
   </div>
+
+  <style>
+    .reviews-section {
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 2px solid #eee;
+    }
+
+    .reviews-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .reviews-header h2 {
+      margin: 0;
+      color: #333;
+    }
+
+    .rating-summary {
+      text-align: right;
+    }
+
+    .average-rating {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .star {
+      font-size: 18px;
+      color: #ddd;
+    }
+
+    .star.filled {
+      color: #ffd700;
+    }
+
+    .rating-text {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .no-rating {
+      color: #888;
+      font-style: italic;
+    }
+
+    .review-actions {
+      margin-bottom: 30px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .btn-review {
+      background: #007bff;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .btn-review:hover {
+      background: #0056b3;
+    }
+
+    .review-notice {
+      margin: 0;
+      color: #666;
+    }
+
+    .review-notice a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .review-notice a:hover {
+      text-decoration: underline;
+    }
+
+    .login-prompt {
+      margin: 0;
+      color: #666;
+    }
+
+    .login-prompt a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .login-prompt a:hover {
+      text-decoration: underline;
+    }
+
+    .reviews-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .review-item {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      background: white;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .reviewer-info {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .review-rating .star {
+      font-size: 14px;
+    }
+
+    .review-date {
+      color: #888;
+      font-size: 14px;
+    }
+
+    .review-content h4 {
+      margin: 0 0 10px 0;
+      color: #333;
+      font-size: 18px;
+    }
+
+    .review-content p {
+      margin: 0;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    .no-reviews {
+      text-align: center;
+      padding: 40px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      color: #666;
+    }
+
+    .no-reviews p {
+      margin: 0;
+      font-size: 16px;
+    }
+  </style>
 </body>
 </html>

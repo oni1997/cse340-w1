@@ -44,6 +44,8 @@ app.get("/", utilities.handleErrors(require("./controllers/homeController").getH
 app.use("/inv", require("./routes/inventoryRoute"))
 // Account routes
 app.use("/account", require("./routes/accountRoute"))
+// Review routes
+app.use("/reviews", require("./routes/reviewRoute"))
 
 app.get("/test-db", async (req, res) => {
   try {

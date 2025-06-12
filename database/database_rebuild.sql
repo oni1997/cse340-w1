@@ -52,6 +52,20 @@ SET inv_description = REPLACE(inv_description, 'small interiors', 'a huge interi
 WHERE inv_make = 'GM' AND inv_model = 'Hummer';
 
 -- Copy of Query 6 from Task 1 (run last)
-UPDATE inventory 
+UPDATE inventory
 SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
     inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
+
+-- Create reviews table for customer reviews and ratings
+CREATE TABLE reviews (
+    review_id SERIAL PRIMARY KEY,
+    inv_id INT NOT NULL,
+    account_id INT NOT NULL,
+    review_title VARCHAR(100) NOT NULL,
+    review_text TEXT NOT NULL,
+    review_rating INT NOT NULL CHECK (review_rating >= 1 AND review_rating <= 5),
+    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (inv_id) REFERENCES inventory (inv_id) ON DELETE CASCADE,
+    FOREIGN KEY (account_id) REFERENCES account (account_id) ON DELETE CASCADE,
+    UNIQUE(inv_id, account_id) -- One review per customer per vehicle
+);

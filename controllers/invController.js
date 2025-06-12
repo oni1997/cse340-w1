@@ -48,25 +48,49 @@ invCont.buildVehicleDetail = async function (req, res, next) {
   try {
     const inv_id = req.params.invId
     const vehicleData = await invModel.getVehicleById(inv_id)
-    
+    const nav = await utilities.getNav()
+
     if (!vehicleData || vehicleData.length === 0) {
-      const nav = await utilities.getNav()
       return res.status(404).render("./inventory/detail", {
         title: "Vehicle Not Found",
         nav,
-        vehicleDetail: '<p class="notice">Sorry, the requested vehicle was not found.</p>'
+        vehicleDetail: '<p class="notice">Sorry, the requested vehicle was not found.</p>',
+        reviews: [],
+        averageRating: null,
+        reviewCount: 0,
+        vehicle: null,
+        canReview: false,
+        hasExistingReview: false
       })
     }
-    
+
+    // Get reviews for this vehicle
+    const reviewModel = require("../models/review-model")
+    const reviewsData = await reviewModel.getReviewsByVehicleId(inv_id)
+    const ratingData = await reviewModel.getAverageRating(inv_id)
+
+    // Check if user can review (logged in and hasn't reviewed yet)
+    let canReview = false
+    let hasExistingReview = false
+    if (res.locals.loggedin) {
+      hasExistingReview = await reviewModel.checkExistingReview(inv_id, res.locals.accountData.account_id)
+      canReview = hasExistingReview === 0
+    }
+
     const vehicleDetail = utilities.buildVehicleDetail(vehicleData[0])
-    const nav = await utilities.getNav()
     const make = vehicleData[0].inv_make
     const model = vehicleData[0].inv_model
-    
+
     res.render("./inventory/detail", {
       title: make + " " + model + " Detail",
       nav,
-      vehicleDetail
+      vehicleDetail,
+      reviews: reviewsData.rows || [],
+      averageRating: ratingData.rows[0]?.avg_rating || null,
+      reviewCount: ratingData.rows[0]?.review_count || 0,
+      vehicle: vehicleData[0],
+      canReview,
+      hasExistingReview: hasExistingReview > 0
     })
   } catch (error) {
     console.error("getVehicleById error:", error)
